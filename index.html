@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFinance Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: #000;
+            color: #e6faff;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px 0;
+            text-align: center;
+            z-index: 100;
+        }
+        .navbar a {
+            color: #00ccff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+        .navbar a:hover {
+            color: #ff33cc;
+        }
+
+        /* Page Styles */
+        .page {
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            transition: transform 0.5s ease;
+        }
+        .page.hidden {
+            transform: translateX(100%);
+        }
+        .page.active {
+            transform: translateX(0);
+        }
+
+        /* Welcome Page */
+        #welcomePage {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #welcomePage h1 {
+            font-size: 2.5em;
+            text-transform: uppercase;
+        }
+        #welcomePage p {
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        #welcomePage .disclaimer {
+            font-size: 0.8em;
+            margin-top: 10px;
+        }
+        #welcomePage button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #ff33cc;
+            border: 1px solid #00ccff;
+            border-radius: 25px;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #welcomePage button:hover {
+            background: #00ccff;
+            color: #000;
+        }
+
+        /* Dashboard */
+        #dashboard {
+            padding: 20px;
+            min-height: calc(100vh - 50px);
+        }
+        #dashboard h1 {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 15px auto;
+            max-width: 500px;
+            border-radius: 10px;
+            border: 1px solid #00ccff;
+        }
+        h2 {
+            color: #e6faff;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        .tooltip {
+            position: relative;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 150px;
+            background: rgba(0, 204, 255, 0.7);
+            color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            padding: 3px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -75px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ff33cc;
+            border-radius: 3px;
+            color: #e6faff;
+            font-size: 1em;
+        }
+        input[type="number"]:focus {
+            border-color: #00ccff;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #ff33cc;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #00ccff;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 204, 255, 0.2);
+            border-radius: 3px;
+            color: #e6faff;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="#" onclick="showPage('welcomePage')">Home</a>
+        <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+    </div>
+
+    <!-- Welcome Page -->
+    <div class="page active" id="welcomePage">
+        <h1>SmartFinance</h1>
+        <p>Start Your Financial Journey</p>
+        <p class="disclaimer">Your data stays safe—nothing is stored or sent!</p>
+        <button onclick="showPage('dashboard')">Get Started</button>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="page hidden" id="dashboard">
+        <h1>Finance Tools</h1>
+        <section>
+            <h2>Salary Calculator</h2>
+            <label class="tooltip">Annual Salary ($):
+                <span class="tooltiptext">Data is not stored or sent.</span>
+            </label><input type="number" id="annualSalary" min="0">
+            <label class="tooltip">Tax Rate (%):
+                <span class="tooltiptext">Data is not stored or sent.</span>
+            </label><input type="number" id="taxRate" value="20" min="0" max="100">
+            <button onclick="calculateSalary()">Calculate</button>
+            <div id="salaryResult" class="result"></div>
+        </section>
+        <section>
+            <h2>Car Payment Calculator</h2>
+            <label class="tooltip">Car Price ($):
+                <span class="tooltiptext">Placeholder—coming soon!</span>
+            </label><input type="number" disabled>
+            <label class="tooltip">Loan Term (months):
+                <span class="tooltiptext">Placeholder—coming soon!</span>
+            </label><input type="number" disabled>
+            <button disabled>Calculate</button>
+        </section>
+        <section>
+            <h2>Mortgage Calculator</h2>
+            <label class="tooltip">Home Price ($):
+                <span class="tooltiptext">Placeholder—coming soon!</span>
+            </label><input type="number" disabled>
+            <label class="tooltip">Interest Rate (%):
+                <span class="tooltiptext">Placeholder—coming soon!</span>
+            </label><input type="number" disabled>
+            <button disabled>Calculate</button>
+        </section>
+        <section>
+            <h2>Budgeting Tool</h2>
+            <label class="tooltip">Monthly Income ($):
+                <span class="tooltiptext">Placeholder—coming soon!</span>
+            </label><input type="number" disabled>
+            <label class="tooltip">Expenses ($):
+                <span class="tooltiptext">Placeholder—coming soon!</span>
+            </label><input type="number" disabled>
+            <button disabled>Calculate</button>
+        </section>
+    </div>
+
+    <script>
+        // Navigation Function
+        function showPage(pageId) {
+            const pages = ['welcomePage', 'dashboard'];
+            pages.forEach(id => {
+                const page = document.getElementById(id);
+                if (id === pageId) {
+                    page.classList.remove('hidden');
+                    page.classList.add('active');
+                } else {
+                    page.classList.remove('active');
+                    page.classList.add('hidden');
+                }
+            });
+        }
+
+        // Salary Calculator
+        function calculateSalary() {
+            const annualSalary = parseFloat(document.getElementById('annualSalary').value);
+            const taxRate = parseFloat(document.getElementById('taxRate').value);
+            if (isNaN(annualSalary) || annualSalary < 0 || isNaN(taxRate) || taxRate < 0 || taxRate > 100) {
+                document.getElementById('salaryResult').innerHTML = "Invalid input (Tax Rate: 0-100%).";
+                return;
+            }
+            const preTaxMonthly = annualSalary / 12;
+            const taxAmount = annualSalary * (taxRate / 100);
+            const postTaxMonthly = (annualSalary - taxAmount) / 12;
+            document.getElementById('salaryResult').innerHTML = `
+                Pre-Tax Monthly: $${preTaxMonthly.toFixed(2)}<br>
+                Tax Amount: $${taxAmount.toFixed(2)}<br>
+                Post-Tax Monthly: $${postTaxMonthly.toFixed(2)}
+            `;
+            document.getElementById('annualSalary').value = '';
+            document.getElementById('taxRate').value = '20';
+        }
+    </script>
+</body>
+</html>
